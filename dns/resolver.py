@@ -63,9 +63,9 @@ class Resolver:
         ipaddrlist = []
         for answer in response.answers:
             if answer.type_ == Type.A:
-                ipaddrlist.append(answer.rdata.data)
+                ipaddrlist.append(answer.rdata.address)
             if answer.type_ == Type.CNAME:
                 aliaslist.append(hostname)
-                hostname = answer.rdata.data
+                hostname = str(answer.rdata.cname)
 
         return hostname, aliaslist, ipaddrlist
