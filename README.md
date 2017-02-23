@@ -1,4 +1,4 @@
-# Project 2 Framework
+# DNS Project Framework
 
 ## Description
 
@@ -37,8 +37,6 @@ You can ignore the code for converting from and to bytes from these files if
 you want, but it might be useful (especially for debugging).
 
 After finishing the resolver you need to implement caching and the DNS server.
-You can implement these in any order that you like.
-I suggest implementing the recursive part (the resolving) of your DNS server, before implementing the management of the servers zone.
 
 Wireshark and dns_client.py are useful tools for debugging your resolver.
 Wireshark and nslookup are useful tools for debugging your server.
