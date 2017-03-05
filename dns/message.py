@@ -6,7 +6,6 @@ This module contains classes for DNS messages, their header section and
 question fields. See section 4 of RFC 1035 for more info.
 """
 
-
 import struct
 
 from dns.classes import Class
@@ -153,6 +152,7 @@ class Header:
     def flags(self):
         """Get raw flag values."""
         return self._flags
+
     @flags.setter
     def flags(self, value):
         """Set raw flag values."""
@@ -164,6 +164,7 @@ class Header:
     def qr(self):
         """Get QR flag."""
         return (self._flags >> 15) & 0b1
+
     @qr.setter
     def qr(self, value):
         """Set QR flag."""
@@ -176,6 +177,7 @@ class Header:
     def opcode(self):
         """Get Opcode."""
         return (self._flags >> 11) & 0b1111
+
     @opcode.setter
     def opcode(self, value):
         """Set Opcode."""
@@ -188,6 +190,7 @@ class Header:
     def aa(self):
         """Get aa flag."""
         return (self._flags >> 10) & 0b1
+
     @aa.setter
     def aa(self, value):
         """Set aa flag."""
@@ -200,6 +203,7 @@ class Header:
     def tc(self):
         """Get tc flag."""
         return (self._flags >> 9) & 0b1
+
     @tc.setter
     def tc(self, value):
         """Set tc flag."""
@@ -212,6 +216,7 @@ class Header:
     def rd(self):
         """Get rd flag."""
         return (self._flags >> 8) & 0b1
+
     @rd.setter
     def rd(self, value):
         """Set rd flag."""
@@ -224,6 +229,7 @@ class Header:
     def ra(self):
         """Get ra flag."""
         return (self._flags >> 7) & 0b1
+
     @ra.setter
     def ra(self, value):
         """Set ra flag."""
@@ -235,12 +241,13 @@ class Header:
     @property
     def z(self):
         """Get data in reserved field."""
-        return (self._flags  >> 4) & 0b111
+        return (self._flags >> 4) & 0b111
 
     @property
     def rcode(self):
         """Get RCODE."""
         return self._flags & 0b1111
+
     @rcode.setter
     def rcode(self, value):
         """Set RCODE."""

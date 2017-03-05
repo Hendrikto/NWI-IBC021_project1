@@ -2,11 +2,10 @@
 
 """DNS Resolver
 
-This module contains a class for resolving hostnames. You will have to implement
-things in this module. This resolver will be both used by the DNS client and the
-DNS server, but with a different list of servers.
+This module contains a class for resolving hostnames. You will have to
+implement things in this module. This resolver will be both used by the DNS
+client and the DNS server, but with a different list of servers.
 """
-
 
 import socket
 

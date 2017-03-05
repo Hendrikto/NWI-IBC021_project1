@@ -77,7 +77,9 @@ class Name:
                 if label_length == 0:
                     break
             elif label_length >= 192:
-                pointer = struct.unpack_from("!H", packet, offset)[0] - (3 << 14)
+                pointer = struct.unpack_from(
+                    "!H", packet, offset
+                )[0] - (3 << 14)
                 if hops == 0:
                     next_offset = offset + 2
                 hops += 1

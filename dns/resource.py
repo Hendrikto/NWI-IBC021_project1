@@ -7,7 +7,6 @@ module is fully implemented. You will have this module in the implementation
 of your resolver and server.
 """
 
-
 import socket
 import struct
 
@@ -18,6 +17,7 @@ from dns.types import Type
 
 class ResourceRecord(object):
     """DNS resource record."""
+
     def __init__(self, name, type_, class_, ttl, rdata):
         """Create a new resource record.
 
@@ -56,11 +56,11 @@ class ResourceRecord(object):
 
     def to_dict(self):
         """Convert ResourceRecord to dict."""
-        return {"name" : str(self.name),
-                "type" : str(self.type_),
-                "class" : str(self.class_),
-                "ttl" : self.ttl,
-                "rdata" : self.rdata.to_dict()}
+        return {"name": str(self.name),
+                "type": str(self.type_),
+                "class": str(self.class_),
+                "ttl": self.ttl,
+                "rdata": self.rdata.to_dict()}
 
     @classmethod
     def from_dict(cls, dct):
@@ -139,12 +139,12 @@ class ARecordData(RecordData):
             offset (int): offset in message.
             rdlength (int): length of rdata.
         """
-        address = socket.inet_ntoa(packet[offset:offset+4])
+        address = socket.inet_ntoa(packet[offset:offset + 4])
         return cls(address)
 
     def to_dict(self):
         """Convert to dict."""
-        return {"address" : self.address}
+        return {"address": self.address}
 
     @classmethod
     def from_dict(cls, dct):
@@ -186,7 +186,7 @@ class CNAMERecordData(RecordData):
 
     def to_dict(self):
         """Convert to dict."""
-        return {"cname" : str(self.cname)}
+        return {"cname": str(self.cname)}
 
     @classmethod
     def from_dict(cls, dct):
@@ -231,7 +231,7 @@ class NSRecordData(RecordData):
 
     def to_dict(self):
         """Convert to dict."""
-        return {"nsdname" : str(self.nsdname)}
+        return {"nsdname": str(self.nsdname)}
 
     @classmethod
     def from_dict(cls, dct):
@@ -296,14 +296,17 @@ class SOARecordData(RecordData):
         retry = struct.unpack_from("!i", packet, offset + 8)[0]
         expire = struct.unpack_from("!i", packet, offset + 12)[0]
         minimum = struct.unpack_from("!I", packet, offset + 16)[0]
-        return cls(mname, rname, serial, refresh, retry, expire, minimum), offset + 20
+        return (
+            cls(mname, rname, serial, refresh, retry, expire, minimum),
+            offset + 20,
+        )
 
     def to_dict(self):
         """Convert to dict."""
-        return {"mname" : str(self.mname), "rname" : str(self.rname),
-                "serial" : self.serial, "refresh" : self.refresh,
-                "retry" : self.retry, "expire" : self.expire,
-                "minimum" : self.minimum}
+        return {"mname": str(self.mname), "rname": str(self.rname),
+                "serial": self.serial, "refresh": self.refresh,
+                "retry": self.retry, "expire": self.expire,
+                "minimum": self.minimum}
 
     @classmethod
     def from_dict(cls, dct):
@@ -341,12 +344,12 @@ class GenericRecordData(RecordData):
             offset (int): offset in message.
             rdlength (int): length of rdata.
         """
-        data = packet[offset:offset+rdlength]
+        data = packet[offset:offset + rdlength]
         return cls(data)
 
     def to_dict(self):
         """Convert to dict."""
-        return {"data" : self.data}
+        return {"data": self.data}
 
     @classmethod
     def from_dict(cls, dct):
