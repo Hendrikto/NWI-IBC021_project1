@@ -34,7 +34,9 @@ class MessageTestCase(DNSTestCase):
         authority.to_bytes.return_value = b"\x04"
         additional = MagicMock()
         additional.to_bytes.return_value = b"\x05"
-        message = Message(header, [question], [answer], [authority], [additional])
+        message = Message(
+            header, [question], [answer], [authority], [additional]
+        )
         self.assertEqual(message.to_bytes(), b"\x01\x02\x03\x04\x05")
 
     @patch("dns.message.ResourceRecord")

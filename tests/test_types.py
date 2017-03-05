@@ -8,7 +8,7 @@ from dns.types import Type
 class TypeTestCase(unittest.TestCase):
     def test_type_str(self):
         self.assertEqual(str(Type.NS), "NS")
-    
+
     def test_type_from_str(self):
         self.assertEqual(Type["AAAA"], Type.AAAA)
 
@@ -16,5 +16,5 @@ class TypeTestCase(unittest.TestCase):
         self.assertEqual(Type.A, 1)
 
 
-if __name__  == '__main__':
+if __name__ == '__main__':
     unittest.main()

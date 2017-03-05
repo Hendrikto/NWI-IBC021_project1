@@ -105,7 +105,7 @@ class NameTestCase(unittest.TestCase):
         name2, offset = Name.from_bytes(packet, offset)
         self.assertEqual(name1, Name("www.example.com"))
         self.assertEqual(name2, Name("ftp.example.com"))
-    
+
     def test_name_from_bytes3(self):
         packet = b"\x41" + b"a" * 65
         with self.assertRaises(ValueError):
@@ -116,5 +116,6 @@ class NameTestCase(unittest.TestCase):
         name, offset = Name.from_bytes(packet, 0)
         self.assertEqual(name.labels, [])
 
-if __name__  == '__main__':
+
+if __name__ == '__main__':
     unittest.main()

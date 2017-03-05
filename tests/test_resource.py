@@ -19,7 +19,7 @@ class ResourceRecordTestCase(DNSTestCase):
             r1.class_ != r2.class_ or
             r1.ttl != r2.ttl):
             raise self.inequalityException(r1, r2, msg)
-    
+
     def test_resource_to_bytes(self):
         name = MagicMock()
         name.to_bytes.return_value = b"\x07example\x03com\x00"
@@ -31,7 +31,7 @@ class ResourceRecordTestCase(DNSTestCase):
             record.to_bytes(0, compress),
             (b"\x07example\x03com\x00\x00\x01\x00\x02\x00\x00\x00\x03\x00"
              b"\x04\x04\x05\x06\x07"))
-    
+
     @patch("dns.resource.RecordData")
     @patch("dns.resource.Name")
     def test_resource_from_bytes(self, MockName, MockRData):
