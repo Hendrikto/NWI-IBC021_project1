@@ -32,8 +32,24 @@ class Resolver:
     def gethostbyname(self, hostname):
         """Translate a host name to IPv4 address.
 
-        Currently this method contains an example. You will have to replace
-        this example with the algorithm described in section 5.3.3 in RFC 1034.
+        Algorithm in RFC 1034 5.3.3:
+            1 See if the answer is in local information, and if so return
+              it to the client.
+            2 Find the best servers to ask.
+            3 Send them queries until one returns a response.
+            4 Analyze the response, either:
+                a. if the response answers the question or contains a name
+                error, cache the data as well as returning it back to
+                the client.
+                b. if the response contains a better delegation to other
+                servers, cache the delegation information, and go to
+                step 2.
+                c. if the response shows a CNAME and that is not the
+                answer itself, cache the CNAME, change the SNAME to the
+                canonical name in the CNAME RR and go to step 1.
+                d. if the response shows a servers failure or other
+                bizarre contents, delete the server from the SLIST and
+                go back to step 3.
 
         Args:
             hostname (str): the hostname to resolve
