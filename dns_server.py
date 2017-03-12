@@ -5,7 +5,7 @@
 This script contains the code for starting a DNS server.
 """
 
-from argparser import ArgumentParser
+from argparse import ArgumentParser
 
 from dns.server import Server
 
