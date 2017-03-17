@@ -32,6 +32,22 @@ class Resolver:
         data = sock.recv(512)
         return Message.from_bytes(data)
 
+    @staticmethod
+    def query_recursive(sock, hostname, ip):
+        response = Resolver.send_query(sock, hostname, ip)
+        if response.header.an_count > 0:
+            return response
+        ips = []
+        for d in response.additionals:
+            if hasattr(d.rdata, "address") and d.type_ is Type.A:
+                ips.append(d.rdata.address)
+        print(ips)
+        for new_ip in ips:
+            res = Resolver.query_recursive(sock, hostname, new_ip)
+            if res is not None:
+                return res
+
+
     def __init__(self, timeout, caching, ttl):
         """Initialize the resolver
 
