@@ -17,6 +17,20 @@ from dns.types import Type
 
 class Resolver:
     """DNS resolver"""
+    @staticmethod
+    def send_query(sock, hostname, ip):
+        # Create and send query
+        question = Question(Name(hostname), Type.A, Class.IN)
+        header = Header(9001, 0, 1, 0, 0, 0)
+        header.qr = 0
+        header.opcode = 0
+        header.rd = 0  # no recursion desired
+        query = Message(header, [question])
+        sock.sendto(query.to_bytes(), (ip, 53))
+
+        # Receive response
+        data = sock.recv(512)
+        return Message.from_bytes(data)
 
     def __init__(self, timeout, caching, ttl):
         """Initialize the resolver
