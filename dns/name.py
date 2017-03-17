@@ -20,6 +20,8 @@ class Name:
                 del self.labels[-1]
         elif isinstance(hostname, list):
             self.labels = hostname
+        elif isinstance(hostname, Name):
+            self.labels = hostname.labels
         else:
             raise TypeError
 
