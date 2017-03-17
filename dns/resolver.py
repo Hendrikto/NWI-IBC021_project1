@@ -52,7 +52,6 @@ class Resolver:
             if res is not None:
                 return res
 
-
     def __init__(self, timeout, caching, ttl):
         """Initialize the resolver
 
