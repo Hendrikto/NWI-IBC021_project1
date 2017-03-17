@@ -2,12 +2,11 @@
 
 """Tests for your DNS resolver and server"""
 
-
 import sys
 import unittest
 from unittest import TestCase
 from argparse import ArgumentParser
-
+from dns.resolver import Resolver
 
 PORT = 5001
 SERVER = "localhost"
@@ -15,6 +14,13 @@ SERVER = "localhost"
 
 class TestResolver(TestCase):
     """Resolver tests"""
+
+    def test_gethostbyname(self):
+        resolver = Resolver(5, False, 0)
+        self.assertEqual(
+            resolver.gethostbyname("google-public-dns-a.google.com"),
+            ("google-public-dns-a.google.com", [], ["8.8.8.8"]),
+        )
 
 
 class TestCache(TestCase):
