@@ -32,8 +32,7 @@ class Resolver:
         data = sock.recv(512)
         return Message.from_bytes(data)
 
-    @staticmethod
-    def query_recursive(sock, hostname, ip):
+    def query_recursive(self, sock, hostname, ip):
         response = Resolver.send_query(sock, hostname, ip)
         if response.header.an_count > 0:
             return response
@@ -41,9 +40,15 @@ class Resolver:
         for d in response.additionals:
             if hasattr(d.rdata, "address") and d.type_ is Type.A:
                 ips.append(d.rdata.address)
-        print(ips)
+        if len(ips) == 0:
+            for rr in response.authorities:
+                ipaddrlist = self.gethostbyname(rr.rdata.nsdname)[2]
+                for new_ip in ipaddrlist:
+                    res = self.query_recursive(sock, hostname, new_ip)
+                    if res is not None:
+                        return res
         for new_ip in ips:
-            res = Resolver.query_recursive(sock, hostname, new_ip)
+            res = self.query_recursive(sock, hostname, new_ip)
             if res is not None:
                 return res
 
@@ -90,18 +95,8 @@ class Resolver:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
 
-        # Create and send query
-        question = Question(Name(hostname), Type.A, Class.IN)
-        header = Header(9001, 0, 1, 0, 0, 0)
-        header.qr = 0
-        header.opcode = 0
-        header.rd = 0 # no recursion desired
-        query = Message(header, [question])
-        sock.sendto(query.to_bytes(), ("8.8.8.8", 53))
-
-        # Receive response
-        data = sock.recv(512)
-        response = Message.from_bytes(data)
+        root_server = "198.97.190.53"  # h.root-servers.net
+        response = self.query_recursive(sock, hostname, root_server)
 
         # Get data
         aliaslist = []
