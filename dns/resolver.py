@@ -65,7 +65,7 @@ class Resolver:
         header = Header(9001, 0, 1, 0, 0, 0)
         header.qr = 0
         header.opcode = 0
-        header.rd = 1
+        header.rd = 0 # no recursion desired
         query = Message(header, [question])
         sock.sendto(query.to_bytes(), ("8.8.8.8", 53))
 
