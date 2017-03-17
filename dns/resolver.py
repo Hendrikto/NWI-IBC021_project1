@@ -17,6 +17,9 @@ from dns.types import Type
 
 class Resolver:
     """DNS resolver"""
+
+    root_server = "198.97.190.53"  # h.root-servers.net
+
     @staticmethod
     def send_query(sock, hostname, ip):
         # Create and send query
@@ -37,12 +40,17 @@ class Resolver:
         if response.header.an_count > 0:
             return response
         ips = []
-        for d in response.additionals:
-            if hasattr(d.rdata, "address") and d.type_ is Type.A:
-                ips.append(d.rdata.address)
+        for resource_record in response.additionals:
+            if (
+                        hasattr(resource_record.rdata, "address")
+                    and resource_record.type_ is Type.A
+            ):
+                ips.append(resource_record.rdata.address)
         if len(ips) == 0:
-            for rr in response.authorities:
-                ipaddrlist = self.gethostbyname(rr.rdata.nsdname)[2]
+            for resource_record in response.authorities:
+                ipaddrlist = self.gethostbyname(
+                    resource_record.rdata.nsdname
+                )[2]
                 for new_ip in ipaddrlist:
                     res = self.query_recursive(sock, hostname, new_ip)
                     if res is not None:
@@ -94,8 +102,7 @@ class Resolver:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
 
-        root_server = "198.97.190.53"  # h.root-servers.net
-        response = self.query_recursive(sock, hostname, root_server)
+        response = self.query_recursive(sock, hostname, Resolver.root_server)
 
         sock.close()
 
