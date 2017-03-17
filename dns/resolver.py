@@ -97,6 +97,8 @@ class Resolver:
         root_server = "198.97.190.53"  # h.root-servers.net
         response = self.query_recursive(sock, hostname, root_server)
 
+        sock.close()
+
         # Get data
         aliaslist = []
         ipaddrlist = []
