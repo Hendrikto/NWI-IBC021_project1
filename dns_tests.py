@@ -21,6 +21,10 @@ class TestResolver(TestCase):
             resolver.gethostbyname("google-public-dns-a.google.com"),
             ("google-public-dns-a.google.com", [], ["8.8.8.8"]),
         )
+        self.assertEqual(
+            resolver.gethostbyname("google-public-dns-b.google.com"),
+            ("google-public-dns-b.google.com", [], ["8.8.4.4"]),
+        )
 
 
 class TestCache(TestCase):
