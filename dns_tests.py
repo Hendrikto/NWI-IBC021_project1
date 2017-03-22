@@ -61,7 +61,7 @@ def run_tests():
     sys.argv[1:] = extra
 
     # Start test suite
-    unittest.main()
+    unittest.main(verbosity=2)
 
 
 if __name__ == "__main__":
