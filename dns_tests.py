@@ -26,6 +26,12 @@ class TestResolver(TestCase):
             ("google-public-dns-b.google.com", [], ["8.8.4.4"]),
         )
 
+    def test_gethostbyname_non_existent(self):
+        resolver = Resolver(5, False, 0)
+        self.assertEqual(
+            resolver.gethostbyname("bonobo.putin"),
+            ("bonobo.putin", [], [])
+        )
 
 class TestCache(TestCase):
     """Cache tests"""
