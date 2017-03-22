@@ -25,6 +25,10 @@ class TestResolver(TestCase):
             resolver.gethostbyname("google-public-dns-b.google.com"),
             ("google-public-dns-b.google.com", [], ["8.8.4.4"]),
         )
+        self.assertEqual(
+            resolver.gethostbyname("con1.nipr.mil"),
+            ("con1.nipr.mil", [], ["199.252.157.234"]),
+        )
 
     def test_gethostbyname_non_existent(self):
         resolver = Resolver(5, False, 0)
