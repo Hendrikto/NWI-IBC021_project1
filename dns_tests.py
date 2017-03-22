@@ -36,6 +36,10 @@ class TestResolver(TestCase):
             resolver.gethostbyname("bonobo.putin"),
             ("bonobo.putin", [], [])
         )
+        self.assertEqual(
+            resolver.gethostbyname("gumpenfisch.net"),
+            ("gumpenfisch.net", [], [])
+        )
 
 class TestCache(TestCase):
     """Cache tests"""
