@@ -37,7 +37,10 @@ class Resolver:
 
     def query_recursive(self, sock, hostname, ip):
         response = Resolver.send_query(sock, hostname, ip)
-        if response.header.an_count > 0:
+        if (
+                response.header.an_count > 0 or
+                response.header.rcode != 0
+        ):
             return response
         ips = []
         for resource_record in response.additionals:
