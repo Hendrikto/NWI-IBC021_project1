@@ -29,6 +29,10 @@ class TestResolver(TestCase):
             resolver.gethostbyname("con1.nipr.mil"),
             ("con1.nipr.mil", [], ["199.252.157.234"]),
         )
+        self.assertEqual(
+            resolver.gethostbyname("gaia.cs.umass.edu"),        # recommended domain to test
+            ("gaia.cs.umass.edu", [], ["128.119.245.12"]),
+        )
 
     def test_gethostbyname_non_existent(self):
         resolver = Resolver(5, False, 0)
@@ -39,6 +43,14 @@ class TestResolver(TestCase):
         self.assertEqual(
             resolver.gethostbyname("gumpenfisch.net"),
             ("gumpenfisch.net", [], [])
+        )
+        self.assertEqual(
+            resolver.gethostbyname("ThisDomainDoesNotExist.false"),
+            ("ThisDomainDoesNotExist.false", [], [])
+        )
+        self.assertEqual(
+            resolver.gethostbyname("JustSoWeHaveMoreThanThree.domains"),
+            ("JustSoWeHaveMoreThanThree.domains", [], [])
         )
 
 class TestCache(TestCase):
