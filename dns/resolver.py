@@ -45,8 +45,8 @@ class Resolver:
         ips = []
         for resource_record in response.additionals:
             if (
-                        hasattr(resource_record.rdata, "address")
-                    and resource_record.type_ is Type.A
+                    hasattr(resource_record.rdata, "address") and
+                    resource_record.type_ is Type.A
             ):
                 ips.append(resource_record.rdata.address)
         if len(ips) == 0:

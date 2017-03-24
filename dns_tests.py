@@ -30,7 +30,8 @@ class TestResolver(TestCase):
             ("con1.nipr.mil", [], ["199.252.157.234"]),
         )
         self.assertEqual(
-            resolver.gethostbyname("gaia.cs.umass.edu"),        # recommended domain to test
+            # recommended domain to test
+            resolver.gethostbyname("gaia.cs.umass.edu"),
             ("gaia.cs.umass.edu", [], ["128.119.245.12"]),
         )
 
@@ -52,6 +53,7 @@ class TestResolver(TestCase):
             resolver.gethostbyname("JustSoWeHaveMoreThanThree.domains"),
             ("JustSoWeHaveMoreThanThree.domains", [], [])
         )
+
 
 class TestCache(TestCase):
     """Cache tests"""
