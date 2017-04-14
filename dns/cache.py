@@ -33,7 +33,7 @@ class RecordCache:
         and class.
 
         Args:
-            dname (str): domain name
+            dname (Name): domain name
             type_ (Type): type
             class_ (Class): class
         """
