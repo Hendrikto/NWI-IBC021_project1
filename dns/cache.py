@@ -37,7 +37,13 @@ class RecordCache:
             type_ (Type): type
             class_ (Class): class
         """
-        pass
+        for record in self.records:
+            if (
+                    record.name == dname and
+                    record.type_ is type_ and
+                    record.class_ is class_
+            ):
+                return record
 
     def add_record(self, record):
         """Add a new Record to the cache
