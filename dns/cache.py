@@ -45,7 +45,7 @@ class RecordCache:
         Args:
             record (ResourceRecord): the record added to the cache
         """
-        pass
+        self.records.add(record)
 
     def read_cache_file(self):
         """Read the cache file from disk"""
