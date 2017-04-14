@@ -43,14 +43,13 @@ class Resolver:
         ):
             return response
         ips = []
-        for resource_record in response.additionals:
-            if (resource_record.type_ is Type.A):
-                ips.append(resource_record.rdata.address)
+        for record in response.additionals:
+            if record.type_ is Type.A:
+                self.cache.add_record(record)
+                ips.append(record.rdata.address)
         if len(ips) == 0:
-            for resource_record in response.authorities:
-                ipaddrlist = self.gethostbyname(
-                    resource_record.rdata.nsdname
-                )[2]
+            for record in response.authorities:
+                ipaddrlist = self.gethostbyname(record.rdata.nsdname)[2]
                 for new_ip in ipaddrlist:
                     res = self.query_recursive(sock, hostname, new_ip)
                     if res is not None:
