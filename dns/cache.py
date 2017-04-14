@@ -23,7 +23,7 @@ class RecordCache:
         Args:
             ttl (int): TTL of cached entries (if > 0)
         """
-        self.records = []
+        self.records = set()
         self.ttl = ttl
 
     def lookup(self, dname, type_, class_):
@@ -55,7 +55,7 @@ class RecordCache:
                 dcts = json.load(file_)
         except:
             print("could not read cache")
-        self.records = [ResourceRecord.from_dict(dct) for dct in dcts]
+        self.records = {ResourceRecord.from_dict(dct) for dct in dcts}
 
     def write_cache_file(self):
         """Write the cache file to disk"""
