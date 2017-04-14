@@ -81,6 +81,24 @@ class ResourceRecord(object):
         )
 
 
+class CacheRecord(ResourceRecord):
+    def __init__(self, record, added):
+        super(CacheRecord, self).__init__(
+            record.name, record.type_, record.class_, record.ttl, record.rdata
+        )
+        self.added = int(added)
+
+    def to_dict(self):
+        dct = ResourceRecord.to_dict(self)
+        dct["added"] = self.added
+        return dct
+
+    @classmethod
+    def from_dict(cls, dct):
+        return cls(ResourceRecord.from_dict(dct), dct["added"])
+
+
+
 class RecordData:
     """Record Data."""
 

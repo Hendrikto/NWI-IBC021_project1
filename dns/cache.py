@@ -12,7 +12,7 @@ It is highly recommended to use these.
 import json
 import time
 
-from dns.resource import ResourceRecord
+from dns.resource import ResourceRecord, CacheRecord
 
 
 class RecordCache:
@@ -38,13 +38,17 @@ class RecordCache:
             type_ (Type): type
             class_ (Class): class
         """
-        for added, record in self.records:
+        for record in self.records:
             if (
                     record.name == dname and
                     record.type_ is type_ and
                     record.class_ is class_
             ):
-                return record
+                if time.time() - record.added <= record.ttl:
+                    return record
+                else:
+                    self.records.remove(record)
+                    return
 
     def add_record(self, record):
         """Add a new Record to the cache
@@ -52,7 +56,7 @@ class RecordCache:
         Args:
             record (ResourceRecord): the record added to the cache
         """
-        self.records.add((int(time.time()), record))
+        self.records.add(CacheRecord(record, time.time()))
 
     def add_records(self, records):
         """ Add new Records to the cache
@@ -61,7 +65,7 @@ class RecordCache:
             records ([ResourceRecord]): the records added to the cache
         """
         self.records.update(set(
-            (int(time.time()), record) for record in records
+            CacheRecord(record, time.time()) for record in records
         ))
 
     def read_cache_file(self):
@@ -72,13 +76,11 @@ class RecordCache:
                 records = json.load(file_)
         except:
             print("could not read cache")
-        self.records = {
-            (added, ResourceRecord.from_dict(dct)) for added, dct in records
-        }
+        self.records = {CacheRecord.from_dict(dct) for dct in records}
 
     def write_cache_file(self):
         """Write the cache file to disk"""
-        dcts = [(added, record.to_dict()) for added, record in self.records]
+        dcts = [record.to_dict() for record in self.records]
         try:
             with open("cache", "w") as file_:
                 json.dump(dcts, file_, indent=2)
