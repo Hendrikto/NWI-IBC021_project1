@@ -53,6 +53,14 @@ class RecordCache:
         """
         self.records.add(record)
 
+    def add_records(self, records):
+        """ Add new Records to the cache
+
+        Args:
+            records ([ResourceRecord]): the records added to the cache
+        """
+        self.records.update(set(records))
+
     def read_cache_file(self):
         """Read the cache file from disk"""
         dcts = []
