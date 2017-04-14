@@ -70,6 +70,16 @@ class ResourceRecord(object):
         return cls(Name(dct["name"]), type_, Class[dct["class"]], dct["ttl"],
                    rdata)
 
+    def __hash__(self):
+        return hash("{} {} {}".format(self.name, self.type_, self.class_))
+
+    def __eq__(self, other):
+        return (
+            self.name == other.name and
+            self.type_ is other.type_ and
+            self.class_ is other.class_
+        )
+
 
 class RecordData:
     """Record Data."""
