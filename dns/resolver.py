@@ -36,17 +36,25 @@ class Resolver:
         return Message.from_bytes(data)
 
     def query_recursive(self, sock, hostname, ip):
+        if self.caching:
+            record = self.cache.lookup(Name(hostname), Type.A, Class.IN)
+            if record is not None:
+                return [record]
+
         response = Resolver.send_query(sock, hostname, ip)
         if (
                 response.header.an_count > 0 or
                 response.header.rcode != 0
         ):
-            return response
+            if self.caching:
+                self.cache.add_records(response.answers)
+            return response.answers
         ips = []
         for record in response.additionals:
             if record.type_ is Type.A:
-                self.cache.add_record(record)
                 ips.append(record.rdata.address)
+                if self.caching:
+                    self.cache.add_record(record)
         if len(ips) == 0:
             for record in response.authorities:
                 ipaddrlist = self.gethostbyname(record.rdata.nsdname)[2]
@@ -59,16 +67,16 @@ class Resolver:
             if res is not None:
                 return res
 
-    def __init__(self, timeout, caching, ttl):
+    def __init__(self, timeout, caching, cache=None):
         """Initialize the resolver
 
         Args:
             caching (bool): caching is enabled if True
-            ttl (int): ttl of cache entries (if > 0)
+            cache (RecordCache): the cache
         """
         self.timeout = timeout
         self.caching = caching
-        self.ttl = ttl
+        self.cache = cache
 
     def gethostbyname(self, hostname):
         """Translate a host name to IPv4 address.
@@ -101,14 +109,14 @@ class Resolver:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(self.timeout)
 
-        response = self.query_recursive(sock, hostname, Resolver.root_server)
+        answers = self.query_recursive(sock, hostname, Resolver.root_server)
 
         sock.close()
 
         # Get data
         aliaslist = []
         ipaddrlist = []
-        for answer in response.answers:
+        for answer in answers:
             if answer.type_ is Type.A:
                 ipaddrlist.append(answer.rdata.address)
             if answer.type_ is Type.CNAME:

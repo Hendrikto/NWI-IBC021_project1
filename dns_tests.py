@@ -16,7 +16,7 @@ class TestResolver(TestCase):
     """Resolver tests"""
 
     def test_gethostbyname(self):
-        resolver = Resolver(5, False, 0)
+        resolver = Resolver(5, False)
         self.assertEqual(
             resolver.gethostbyname("google-public-dns-a.google.com"),
             ("google-public-dns-a.google.com", [], ["8.8.8.8"]),
@@ -36,7 +36,7 @@ class TestResolver(TestCase):
         )
 
     def test_gethostbyname_non_existent(self):
-        resolver = Resolver(5, False, 0)
+        resolver = Resolver(5, False)
         self.assertEqual(
             resolver.gethostbyname("bonobo.putin"),
             ("bonobo.putin", [], [])
