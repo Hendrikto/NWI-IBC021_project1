@@ -110,9 +110,9 @@ class Resolver:
         aliaslist = []
         ipaddrlist = []
         for answer in response.answers:
-            if answer.type_ == Type.A:
+            if answer.type_ is Type.A:
                 ipaddrlist.append(answer.rdata.address)
-            if answer.type_ == Type.CNAME:
+            if answer.type_ is Type.CNAME:
                 aliaslist.append(hostname)
                 hostname = str(answer.rdata.cname)
 
