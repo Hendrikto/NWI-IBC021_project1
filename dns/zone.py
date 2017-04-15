@@ -8,6 +8,13 @@ zones or record sets.
 
 These classes are merely a suggestion, feel free to use something else.
 """
+import re
+
+from dns.classes import Class
+from dns.name import Name
+from dns.resource import ResourceRecord, RecordData, ARecordData, \
+    CNAMERecordData
+from dns.types import Type
 
 
 class Catalog:
@@ -30,6 +37,8 @@ class Catalog:
 class Zone:
     """A zone in the domain name space"""
 
+    record_re = "^((?:\w+\.?)+)\s+(?:(\d+)\s+)?(?:(\w+)\s+)?(\w+)\s+([\w.]+)"
+
     def __init__(self):
         """Initialize the Zone """
         self.records = {}
@@ -51,4 +60,20 @@ class Zone:
         Args:
             filename (str): the filename of the master file
         """
-        pass
+        records = re.finditer(
+            Zone.record_re, open(filename, "r").read(), flags=re.MULTILINE
+        )
+        for r in records:
+            domain, ttl, class_, type_, rdata = r.groups()
+            record = ResourceRecord(
+                name=Name(domain),
+                type_=Type[type_],
+                class_=Class[class_],
+                ttl=int(ttl) if ttl is not None else 0,
+                rdata=ARecordData(rdata) if Type[type_] is Type.A else
+                CNAMERecordData(rdata)
+            )
+            if domain in self.records:
+                self.records[domain].append(record)
+            else:
+                self.records[domain] = [record]
