@@ -26,7 +26,7 @@ def resolve():
 
     cache = RecordCache(args.ttl)
     cache.read_cache_file()
-    resolver = Resolver(args.timeout, args.caching, cache)
+    resolver = Resolver(args.timeout, cache if args.caching else None)
     hostname, aliaslist, ipaddrlist = resolver.gethostbyname(args.hostname)
     cache.write_cache_file()
 

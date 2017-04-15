@@ -36,7 +36,7 @@ class Resolver:
         return Message.from_bytes(data)
 
     def query_recursive(self, sock, hostname, ip):
-        if self.caching:
+        if self.cache is not None:
             record = self.cache.lookup(Name(hostname), Type.A, Class.IN)
             if record is not None:
                 return [record]
@@ -46,14 +46,14 @@ class Resolver:
                 response.header.an_count > 0 or
                 response.header.rcode != 0
         ):
-            if self.caching:
+            if self.cache is not None:
                 self.cache.add_records(response.answers)
             return response.answers
         ips = []
         for record in response.additionals:
             if record.type_ is Type.A:
                 ips.append(record.rdata.address)
-                if self.caching:
+                if self.cache is not None:
                     self.cache.add_record(record)
         if len(ips) == 0:
             for record in response.authorities:
@@ -67,15 +67,13 @@ class Resolver:
             if res is not None:
                 return res
 
-    def __init__(self, timeout, caching, cache=None):
+    def __init__(self, timeout, cache=None):
         """Initialize the resolver
 
         Args:
-            caching (bool): caching is enabled if True
             cache (RecordCache): the cache
         """
         self.timeout = timeout
-        self.caching = caching
         self.cache = cache
 
     def gethostbyname(self, hostname):
