@@ -55,6 +55,8 @@ class Resolver:
                 ips.append(record.rdata.address)
                 if self.cache is not None:
                     self.cache.add_record(record)
+            if record.type_ is Type.CNAME and self.cache is not None:
+                self.cache.add_record(record)
         if len(ips) == 0:
             for record in response.authorities:
                 ipaddrlist = self.gethostbyname(record.rdata.nsdname)[2]
