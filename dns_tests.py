@@ -60,34 +60,6 @@ class TestResolver(TestCase):
             ("JustSoWeHaveMoreThanThree.domains", [], [])
         )
 
-    def test_caching(self):
-        cache = RecordCache(0)
-        resolver = Resolver(5, cache)
-        # Invalid domain is returned from the cache
-        cache.add_record(ResourceRecord(
-            name=Name("bonobo.putin"),
-            type_= Type.A,
-            class_= Class.IN,
-            ttl=60,
-            rdata=ARecordData("1.0.0.1"),
-        ))
-        self.assertEqual(
-            resolver.gethostbyname("bonobo.putin"),
-            ("bonobo.putin", [], ["1.0.0.1"])
-        )
-        # Expired cache record is not returned
-        cache.add_record(ResourceRecord(
-            name=Name("hw.gumpe"),
-            type_= Type.A,
-            class_= Class.IN,
-            ttl=0,
-            rdata=ARecordData("1.0.0.2"),
-        ))
-        self.assertEqual(
-            resolver.gethostbyname("hw.gumpe"),
-            ("hw.gumpe", [], [])
-        )
-
 
 class TestCache(TestCase):
     """Cache tests"""
@@ -95,6 +67,36 @@ class TestCache(TestCase):
 
 class TestResolverCache(TestCase):
     """Resolver tests with cache enabled"""
+
+    def test_invalid_domain_from_cache(self):
+        cache = RecordCache(0)
+        resolver = Resolver(5, cache)
+        cache.add_record(ResourceRecord(
+            name=Name("bonobo.putin"),
+            type_=Type.A,
+            class_=Class.IN,
+            ttl=60,
+            rdata=ARecordData("1.0.0.1"),
+        ))
+        self.assertEqual(
+            resolver.gethostbyname("bonobo.putin"),
+            ("bonobo.putin", [], ["1.0.0.1"])
+        )
+
+    def test_expired_cache_entry(self):
+        cache = RecordCache(0)
+        resolver = Resolver(5, cache)
+        cache.add_record(ResourceRecord(
+            name=Name("hw.gumpe"),
+            type_=Type.A,
+            class_=Class.IN,
+            ttl=0,
+            rdata=ARecordData("1.0.0.2"),
+        ))
+        self.assertEqual(
+            resolver.gethostbyname("hw.gumpe"),
+            ("hw.gumpe", [], [])
+        )
 
 
 class TestServer(TestCase):
