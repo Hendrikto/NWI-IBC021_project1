@@ -21,7 +21,7 @@ def run_server():
         help="TTL value of cached entries (if > 0)",
     )
     parser.add_argument(
-        "-p", "--port", type=int, default=5353,
+        "-p", "--port", type=int, default=53,
         help="Port which server listens on",
     )
     args = parser.parse_args()
