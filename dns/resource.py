@@ -137,6 +137,17 @@ class RecordData:
         else:
             return GenericRecordData.from_dict(dct)
 
+    @staticmethod
+    def create_from_str(type_, string):
+        """Create a RecordData object from string."""
+        classdict = {
+            Type.A: ARecordData,
+            Type.CNAME: CNAMERecordData,
+            Type.NS: NSRecordData,
+        }
+        if type_ in classdict:
+            return classdict[type_](string)
+
 
 class ARecordData(RecordData):
     """Record data for A type."""

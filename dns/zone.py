@@ -70,8 +70,7 @@ class Zone:
                 type_=Type[type_],
                 class_=Class[class_],
                 ttl=int(ttl) if ttl is not None else 0,
-                rdata=ARecordData(rdata) if Type[type_] is Type.A else
-                CNAMERecordData(rdata)
+                rdata=RecordData.create_from_str(Type[type_], rdata)
             )
             if domain in self.records:
                 self.records[domain].append(record)
