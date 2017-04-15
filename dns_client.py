@@ -25,10 +25,14 @@ def resolve():
     args = parser.parse_args()
 
     cache = RecordCache(args.ttl)
-    cache.read_cache_file()
-    resolver = Resolver(args.timeout, cache if args.caching else None)
+    if args.caching:
+        cache.read_cache_file()
+        resolver = Resolver(args.timeout, cache)
+    else:
+        resolver = Resolver(args.timeout)
     hostname, aliaslist, ipaddrlist = resolver.gethostbyname(args.hostname)
-    cache.write_cache_file()
+    if args.caching:
+        cache.write_cache_file()
 
     print(hostname)
     print(aliaslist)
