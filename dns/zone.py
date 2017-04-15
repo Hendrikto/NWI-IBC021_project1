@@ -37,7 +37,7 @@ class Catalog:
 class Zone:
     """A zone in the domain name space"""
 
-    record_re = "^((?:\w+\.?)+)\s+(?:(\d+)\s+)?(?:(\w+)\s+)?(\w+)\s+([\w.]+)"
+    record_re = "^((?:\w+\.?)+)\s+(?:(\d+)\s+)?(\w+)\s+(\w+)\s+([\w.]+)"
 
     def __init__(self):
         """Initialize the Zone """
