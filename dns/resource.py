@@ -25,6 +25,7 @@ class ResourceRecord(object):
             name (Name): domain name.
             type_ (Type): the type.
             class_ (Class): the class.
+            ttl (int): time to live.
             rdata (RecordData): the record data.
         """
         self.name = name
