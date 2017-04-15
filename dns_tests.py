@@ -6,7 +6,13 @@ import sys
 import unittest
 from unittest import TestCase
 from argparse import ArgumentParser
+
+from dns.cache import RecordCache
+from dns.classes import Class
+from dns.name import Name
 from dns.resolver import Resolver
+from dns.resource import ResourceRecord, ARecordData
+from dns.types import Type
 
 PORT = 5001
 SERVER = "localhost"
@@ -52,6 +58,34 @@ class TestResolver(TestCase):
         self.assertEqual(
             resolver.gethostbyname("JustSoWeHaveMoreThanThree.domains"),
             ("JustSoWeHaveMoreThanThree.domains", [], [])
+        )
+
+    def test_caching(self):
+        cache = RecordCache(0)
+        resolver = Resolver(5, cache)
+        # Invalid domain is returned from the cache
+        cache.add_record(ResourceRecord(
+            name=Name("bonobo.putin"),
+            type_= Type.A,
+            class_= Class.IN,
+            ttl=60,
+            rdata=ARecordData("1.0.0.1"),
+        ))
+        self.assertEqual(
+            resolver.gethostbyname("bonobo.putin"),
+            ("bonobo.putin", [], ["1.0.0.1"])
+        )
+        # Expired cache record is not returned
+        cache.add_record(ResourceRecord(
+            name=Name("hw.gumpe"),
+            type_= Type.A,
+            class_= Class.IN,
+            ttl=0,
+            rdata=ARecordData("1.0.0.2"),
+        ))
+        self.assertEqual(
+            resolver.gethostbyname("hw.gumpe"),
+            ("hw.gumpe", [], [])
         )
 
 
