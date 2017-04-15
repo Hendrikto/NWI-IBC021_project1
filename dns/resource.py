@@ -99,7 +99,6 @@ class CacheRecord(ResourceRecord):
         return cls(ResourceRecord.from_dict(dct), dct["added"])
 
 
-
 class RecordData:
     """Record Data."""
 
