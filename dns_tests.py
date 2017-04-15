@@ -64,6 +64,34 @@ class TestResolver(TestCase):
 class TestCache(TestCase):
     """Cache tests"""
 
+    def test_invalid_domain_from_cache(self):
+        cache = RecordCache(0)
+        record = ResourceRecord(
+            name=Name("bonobo.putin"),
+            type_=Type.A,
+            class_=Class.IN,
+            ttl=60,
+            rdata=ARecordData("1.0.0.1"),
+        )
+        cache.add_record(record)
+        self.assertEqual(
+            cache.lookup(Name("bonobo.putin"), Type.A, Class.IN), record
+        )
+
+    def test_expired_cache_entry(self):
+        cache = RecordCache(0)
+        record = ResourceRecord(
+            name=Name("bonobo.putin"),
+            type_=Type.A,
+            class_=Class.IN,
+            ttl=0,
+            rdata=ARecordData("1.0.0.1"),
+        )
+        cache.add_record(record)
+        self.assertEqual(
+            cache.lookup(Name("bonobo.putin"), Type.A, Class.IN), None
+        )
+
 
 class TestResolverCache(TestCase):
     """Resolver tests with cache enabled"""
