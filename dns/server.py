@@ -42,7 +42,7 @@ class RequestHandler(Thread):
         message = Message.from_bytes(self.data)
         self.domain = message.questions[0].qname
         records = self.lookup_zone()
-        header = Header(message.header.ident, 0, 0, 1, 0, 0)
+        header = Header(message.header.ident, 0, 0, len(records), 0, 0)
         response = Message(header, answers=records)
         self.sock.sendto(response.to_bytes(), self.address)
 
