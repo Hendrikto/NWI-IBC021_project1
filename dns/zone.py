@@ -12,8 +12,7 @@ import re
 
 from dns.classes import Class
 from dns.name import Name
-from dns.resource import ResourceRecord, RecordData, ARecordData, \
-    CNAMERecordData
+from dns.resource import ResourceRecord, RecordData
 from dns.types import Type
 
 
