@@ -8,6 +8,7 @@ This script contains the code for starting a DNS server.
 from argparse import ArgumentParser
 
 from dns.server import Server
+from dns.zone import Zone
 
 
 def run_server():
@@ -25,6 +26,10 @@ def run_server():
         help="Port which server listens on",
     )
     args = parser.parse_args()
+
+    zone = Zone()
+    zone.read_master_file("zone")
+    Server.catalog.add_zone("gumpe.", zone)
 
     server = Server(args.port, args.caching, args.ttl)
     try:
