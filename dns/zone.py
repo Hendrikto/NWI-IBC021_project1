@@ -37,11 +37,18 @@ class Catalog:
 class Zone:
     """A zone in the domain name space"""
 
-    record_re = "^((?:\w+\.?)+)\s+(?:(\d+)\s+)?(\w+)\s+(\w+)\s+([\w.]+)"
+    record_re = (
+        "^(?:((?:\w+\.?)+))?"  # Domain
+        "(?:\s+(\d+))?"  # TTL
+        "\s+(IN)"  # Class
+        "\s+(A|CNAME|NS)"  # Type
+        "\s+([\w.]+)"  # RData
+    )
 
     def __init__(self):
         """Initialize the Zone """
         self.records = {}
+        self.last_domain = ""
 
     def add_node(self, name, record_set):
         """Add a record set to the zone
@@ -65,6 +72,8 @@ class Zone:
         )
         for r in records:
             domain, ttl, class_, type_, rdata = r.groups()
+            domain = domain or self.last_domain
+            self.last_domain = domain
             record = ResourceRecord(
                 name=Name(domain),
                 type_=Type[type_],
