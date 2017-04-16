@@ -50,17 +50,16 @@ class RequestHandler(Thread):
 class Server:
     """A recursive DNS server"""
 
+    cache=None
     catalog = Catalog()
 
-    def __init__(self, port, caching, ttl):
+    def __init__(self, port, ttl):
         """Initialize the server
 
         Args:
             port (int): port that server is listening on
-            caching (bool): server uses resolver with caching if true
             ttl (int): ttl for records (if > 0) of cache
         """
-        self.caching = caching
         self.ttl = ttl
         self.port = port
         self.done = False

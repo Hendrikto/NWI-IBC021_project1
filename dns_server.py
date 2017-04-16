@@ -7,6 +7,7 @@ This script contains the code for starting a DNS server.
 
 from argparse import ArgumentParser
 
+from dns.cache import RecordCache
 from dns.server import Server
 from dns.zone import Zone
 
@@ -31,13 +32,20 @@ def run_server():
     zone.read_master_file("zone")
     Server.catalog.add_zone("gumpe.", zone)
 
-    server = Server(args.port, args.caching, args.ttl)
+    if args.caching:
+        cache = RecordCache(0)
+        cache.read_cache_file()
+        Server.cache = cache
+
+    server = Server(args.port, args.ttl)
     try:
         server.serve()
     except KeyboardInterrupt:
         server.shutdown()
         print()
 
+    if args.caching:
+        cache.write_cache_file()
 
 if __name__ == "__main__":
     run_server()
