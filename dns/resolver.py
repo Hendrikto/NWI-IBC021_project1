@@ -8,6 +8,7 @@ client and the DNS server, but with a different list of servers.
 """
 
 import socket
+from random import randint
 
 from dns.classes import Class
 from dns.message import Message, Question, Header
@@ -24,7 +25,7 @@ class Resolver:
     def send_query(sock, hostname, ip):
         # Create and send query
         question = Question(Name(hostname), Type.A, Class.IN)
-        header = Header(9001, 0, 1, 0, 0, 0)
+        header = Header(randint(0, 2**16), 0, 1, 0, 0, 0)
         header.qr = 0
         header.opcode = 0
         header.rd = 0  # no recursion desired
