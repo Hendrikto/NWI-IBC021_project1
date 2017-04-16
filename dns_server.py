@@ -42,7 +42,6 @@ def run_server():
         server.serve()
     except KeyboardInterrupt:
         server.shutdown()
-        print()
 
     if args.caching:
         cache.write_cache_file()
