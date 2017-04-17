@@ -140,6 +140,18 @@ class TestResolverCache(TestCase):
             ("hw.gumpe", [], [])
         )
 
+    def test_no_cache_entry(self):
+        cache = RecordCache(0)
+        resolver = Resolver(5, cache)
+        self.assertEqual(
+            resolver.gethostbyname("google-public-dns-a.google.com"),
+            ("google-public-dns-a.google.com", [], ["8.8.8.8"]),
+        )
+        self.assertEqual(
+            resolver.gethostbyname("google-public-dns-b.google.com"),
+            ("google-public-dns-b.google.com", [], ["8.8.4.4"]),
+        )
+
 
 class TestServer(TestCase):
     """Server tests"""
