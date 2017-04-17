@@ -9,6 +9,7 @@ import socket
 from threading import Thread
 
 from dns.message import Message, Header
+from dns.resolver import Resolver
 from dns.zone import Catalog
 
 
@@ -42,6 +43,13 @@ class RequestHandler(Thread):
         message = Message.from_bytes(self.data)
         self.domain = message.questions[0].qname
         records = self.lookup_zone()
+        if records is None:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            resolver = Resolver(5, Server.cache)
+            records = resolver.query_recursive(
+                sock, self.domain, Resolver.root_server
+            )
+            sock.close()
         header = Header(message.header.ident, 0, 0, len(records), 0, 0)
         header.rd = message.header.rd
         response = Message(header, answers=records)
