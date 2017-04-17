@@ -38,9 +38,14 @@ class Resolver:
 
     def query_recursive(self, sock, hostname, ip):
         if self.cache is not None:
+            answer = []
             record = self.cache.lookup(Name(hostname), Type.A, Class.IN)
+            alias = self.cache.lookup(Name(hostname), Type.CNAME, Class.IN)
             if record is not None:
-                return [record]
+                answer.append(record)
+            if alias is not None:
+                answer.append(alias)
+            return answer
 
         response = Resolver.send_query(sock, hostname, ip)
         if (

@@ -11,7 +11,7 @@ from dns.cache import RecordCache
 from dns.classes import Class
 from dns.name import Name
 from dns.resolver import Resolver
-from dns.resource import ResourceRecord, ARecordData
+from dns.resource import ResourceRecord, ARecordData, CNAMERecordData
 from dns.types import Type
 
 PORT = 5001
@@ -106,9 +106,16 @@ class TestResolverCache(TestCase):
             ttl=60,
             rdata=ARecordData("1.0.0.1"),
         ))
+        cache.add_record(ResourceRecord(
+            name=Name("bonobo.putin"),
+            type_=Type.CNAME,
+            class_=Class.IN,
+            ttl=60,
+            rdata=CNAMERecordData(Name("putin.bonobo")),
+        ))
         self.assertEqual(
             resolver.gethostbyname("bonobo.putin"),
-            ("bonobo.putin", [], ["1.0.0.1"])
+            ("bonobo.putin", ["putin.bonobo."], ["1.0.0.1"])
         )
 
     def test_expired_cache_entry(self):
@@ -120,6 +127,13 @@ class TestResolverCache(TestCase):
             class_=Class.IN,
             ttl=0,
             rdata=ARecordData("1.0.0.2"),
+        ))
+        cache.add_record(ResourceRecord(
+            name=Name("hw.gumpe"),
+            type_=Type.CNAME,
+            class_=Class.IN,
+            ttl=0,
+            rdata=CNAMERecordData(Name("gumpe.hw")),
         ))
         self.assertEqual(
             resolver.gethostbyname("hw.gumpe"),
