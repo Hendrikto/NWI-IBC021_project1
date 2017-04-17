@@ -121,7 +121,6 @@ class Resolver:
             if answer.type_ is Type.A:
                 ipaddrlist.append(answer.rdata.address)
             if answer.type_ is Type.CNAME:
-                aliaslist.append(hostname)
-                hostname = str(answer.rdata.cname)
+                aliaslist.append(str(answer.rdata.cname))
 
         return hostname, aliaslist, ipaddrlist
