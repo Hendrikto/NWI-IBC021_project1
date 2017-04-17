@@ -45,7 +45,8 @@ class Resolver:
                 answer.append(record)
             if alias is not None:
                 answer.append(alias)
-            return answer
+            if len(answer):
+                return answer
 
         response = Resolver.send_query(sock, hostname, ip)
         if (
