@@ -31,17 +31,19 @@ class RequestHandler(Thread):
             if zone in Server.catalog.zones:
                 name = str(self.domain)[:str(self.domain).rfind(zone)]
                 if name in Server.catalog.zones[zone].records:
-                    return Server.catalog.zones[zone].records[name]
+                    return True, Server.catalog.zones[zone].records[name]
                 else:
-                    return
+                    return True, None
+        return False, None
 
-    def send_response(self, message, records):
+    def send_response(self, message, records, authoritative):
         """Send a response to some message."""
         if len(records) == 0:
             header = Header(message.header.ident, 0, 0, 0, 0, 0)
             header.rcode = 3
         else:
             header = Header(message.header.ident, 0, 0, len(records), 0, 0)
+        header.aa = authoritative  # Authoritative Answer
         header.qr = 1  # Message is Response
         header.rd = message.header.rd  # Recursion desired
         header.ra = 1  # Recursion Available
@@ -55,7 +57,7 @@ class RequestHandler(Thread):
         print(threading.current_thread())
         print("\tDomain:", self.domain)
         print("\tAddress:", self.address)
-        records = self.lookup_zone()
+        authoritative, records = self.lookup_zone()
         if records is None:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             resolver = Resolver(5, Server.cache)
@@ -63,7 +65,7 @@ class RequestHandler(Thread):
                 sock, self.domain, Resolver.root_server
             )
             sock.close()
-        self.send_response(message, records)
+        self.send_response(message, records, authoritative)
 
 
 class Server:
