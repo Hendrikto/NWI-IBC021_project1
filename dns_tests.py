@@ -92,6 +92,20 @@ class TestCache(TestCase):
             cache.lookup(Name("bonobo.putin"), Type.A, Class.IN), None
         )
 
+    def test_ttl_overwrite(self):
+        cache = RecordCache(60)
+        record = ResourceRecord(
+            name=Name("bonobo.putin"),
+            type_=Type.A,
+            class_=Class.IN,
+            ttl=0,
+            rdata=ARecordData("1.0.0.1"),
+        )
+        cache.add_record(record)
+        cache_entry = cache.lookup(Name("bonobo.putin"), Type.A, Class.IN)
+        self.assertEqual(cache_entry, record)
+        self.assertEqual(cache_entry.ttl, 60)
+
 
 class TestResolverCache(TestCase):
     """Resolver tests with cache enabled"""
