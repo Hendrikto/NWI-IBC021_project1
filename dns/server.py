@@ -40,7 +40,6 @@ class RequestHandler(Thread):
         if len(records) == 0:
             header = Header(message.header.ident, 0, 0, 0, 0, 0)
             header.rcode = 3
-            print(header.rcode)
         else:
             header = Header(message.header.ident, 0, 0, len(records), 0, 0)
         header.qr = 1  # Message is Response
