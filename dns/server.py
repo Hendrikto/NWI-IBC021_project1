@@ -6,6 +6,7 @@ This module provides a recursive DNS server. You will have to implement this
 server using the algorithm described in section 4.3.2 of RFC 1034.
 """
 import socket
+import threading
 from threading import Thread
 
 from dns.message import Message, Header
