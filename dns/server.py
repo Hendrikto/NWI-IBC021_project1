@@ -35,6 +35,20 @@ class RequestHandler(Thread):
                 else:
                     return
 
+    def send_response(self, message, records):
+        """Send a response to some message."""
+        if len(records) == 0:
+            header = Header(message.header.ident, 0, 0, 0, 0, 0)
+            header.rcode = 3
+            print(header.rcode)
+        else:
+            header = Header(message.header.ident, 0, 0, len(records), 0, 0)
+        header.qr = 1  # Message is Response
+        header.rd = message.header.rd  # Recursion desired
+        header.ra = 1  # Recursion Available
+        response = Message(header, answers=records)
+        self.sock.sendto(response.to_bytes(), self.address)
+
     def run(self):
         """ Run the handler thread"""
         print("Thread started for:", self.data, self.address)
@@ -48,10 +62,7 @@ class RequestHandler(Thread):
                 sock, self.domain, Resolver.root_server
             )
             sock.close()
-        header = Header(message.header.ident, 0, 0, len(records), 0, 0)
-        header.rd = message.header.rd
-        response = Message(header, answers=records)
-        self.sock.sendto(response.to_bytes(), self.address)
+        self.send_response(message, records)
 
 
 class Server:
