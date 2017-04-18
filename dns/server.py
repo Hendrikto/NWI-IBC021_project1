@@ -75,12 +75,11 @@ class Server:
     cache=None
     catalog = Catalog()
 
-    def __init__(self, port, ttl):
+    def __init__(self, port):
         """Initialize the server
 
         Args:
             port (int): port that server is listening on
-            ttl (int): ttl for records (if > 0) of cache
         """
         self.ttl = ttl
         self.port = port
