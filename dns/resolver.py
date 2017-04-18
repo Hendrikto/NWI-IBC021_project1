@@ -75,6 +75,7 @@ class Resolver:
             res = self.query_recursive(sock, hostname, new_ip)
             if res is not None:
                 return res
+        return []
 
     def __init__(self, timeout, cache=None):
         """Initialize the resolver
