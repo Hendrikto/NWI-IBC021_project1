@@ -57,6 +57,7 @@ class RecordCache:
         Args:
             record (ResourceRecord): the record added to the cache
         """
+        record.ttl = self.ttl or record.ttl
         self.records.add(CacheRecord(record, time.time()))
 
     def add_records(self, records):
@@ -65,9 +66,8 @@ class RecordCache:
         Args:
             records ([ResourceRecord]): the records added to the cache
         """
-        self.records.update(set(
-            CacheRecord(record, time.time()) for record in records
-        ))
+        for record in records:
+            self.add_record(record)
 
     def read_cache_file(self):
         """Read the cache file from disk"""
@@ -77,7 +77,7 @@ class RecordCache:
                 records = json.load(file_)
         except:
             print("could not read cache")
-        self.records = {CacheRecord.from_dict(dct) for dct in records}
+        self.add_records(CacheRecord.from_dict(dct) for dct in records)
 
     def write_cache_file(self):
         """Write the cache file to disk"""
