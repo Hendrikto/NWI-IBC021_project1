@@ -24,6 +24,7 @@ class RecordCache:
         Args:
             ttl (int): TTL of cached entries (if > 0)
         """
+        assert ttl >= 0, "TTL must be >= 0"
         self.records = set()
         self.ttl = ttl
 
