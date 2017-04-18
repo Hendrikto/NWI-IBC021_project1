@@ -51,9 +51,11 @@ class RequestHandler(Thread):
 
     def run(self):
         """ Run the handler thread"""
-        print("Thread started for:", self.data, self.address)
         message = Message.from_bytes(self.data)
         self.domain = message.questions[0].qname
+        print(threading.current_thread())
+        print("\tDomain:", self.domain)
+        print("\tAddress:", self.address)
         records = self.lookup_zone()
         if records is None:
             sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
