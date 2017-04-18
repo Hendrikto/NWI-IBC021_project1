@@ -33,7 +33,7 @@ def run_server():
     Server.catalog.add_zone("gumpe.", zone)
 
     if args.caching:
-        cache = RecordCache(0)
+        cache = RecordCache(args.ttl)
         cache.read_cache_file()
         Server.cache = cache
 
