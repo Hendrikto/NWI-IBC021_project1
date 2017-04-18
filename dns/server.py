@@ -29,11 +29,9 @@ class RequestHandler(Thread):
         for i in range(len(self.domain.labels) + 1):
             zone = ".".join(self.domain.labels[i:]) + "."
             if zone in Server.catalog.zones:
-                if zone in Server.catalog.zones:
-                    records = Server.catalog.zones[zone].records
-                    return records[
-                        str(self.domain)[:str(self.domain).rfind(zone)]
-                    ]
+                name = str(self.domain)[:str(self.domain).rfind(zone)]
+                if name in Server.catalog.zones[zone].records:
+                    return Server.catalog.zones[zone].records[name]
                 else:
                     return
 
