@@ -77,7 +77,7 @@ class RequestHandler(Thread):
 class Server:
     """A recursive DNS server"""
 
-    cache=None
+    cache = None
     catalog = Catalog()
 
     def __init__(self, port):

@@ -223,6 +223,7 @@ class TestServer(TestCase):
             ]
         )
 
+
 def run_tests():
     """Run the DNS resolver and server tests"""
     parser = ArgumentParser(description="DNS Tests")
