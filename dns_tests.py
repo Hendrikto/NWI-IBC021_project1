@@ -181,9 +181,24 @@ class TestServer(TestCase):
         data = s.recv(512)
         s.close()
         message = Message.from_bytes(data)
-        self.assertEqual(
-            message.answers[0].rdata.address,
-            "10.0.1.5"
+        self.assertCountEqual(
+            message.answers,
+            [
+                ResourceRecord(
+                    name=Name("server1.gumpe."),
+                    type_=Type.A,
+                    class_=Class.IN,
+                    ttl=0,
+                    rdata=ARecordData("10.0.1.5"),
+                ),
+                ResourceRecord(
+                    name=Name("server1.gumpe."),
+                    type_=Type.A,
+                    class_=Class.IN,
+                    ttl=0,
+                    rdata=ARecordData("10.0.1.4"),
+                ),
+            ]
         )
 
 def run_tests():
