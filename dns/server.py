@@ -32,7 +32,10 @@ class RequestHandler(Thread):
             if zone in Server.catalog.zones:
                 name = str(self.domain)[:str(self.domain).rfind(zone)]
                 if name in Server.catalog.zones[zone].records:
-                    return True, Server.catalog.zones[zone].records[name]
+                    records = Server.catalog.zones[zone].records[name]
+                    for record in records:
+                        record.name = self.domain
+                    return True, records
                 else:
                     return True, None
         return False, None
