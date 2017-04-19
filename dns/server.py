@@ -37,24 +37,26 @@ class RequestHandler(Thread):
                     return True, None
         return False, None
 
-    def send_response(self, message, records, authoritative):
+    def send_response(self, records, authoritative):
         """Send a response to some message."""
         if len(records) == 0:
-            header = Header(message.header.ident, 0, 0, 0, 0, 0)
+            header = Header(self.message.header.ident, 0, 0, 0, 0, 0)
             header.rcode = 3
         else:
-            header = Header(message.header.ident, 0, 0, len(records), 0, 0)
+            header = Header(
+                self.message.header.ident, 0, 0, len(records), 0, 0
+            )
         header.aa = authoritative  # Authoritative Answer
         header.qr = 1  # Message is Response
-        header.rd = message.header.rd  # Recursion desired
+        header.rd = self.message.header.rd  # Recursion desired
         header.ra = 1  # Recursion Available
         response = Message(header, answers=records)
         self.sock.sendto(response.to_bytes(), self.address)
 
     def run(self):
         """ Run the handler thread"""
-        message = Message.from_bytes(self.data)
-        self.domain = message.questions[0].qname
+        self.message = Message.from_bytes(self.data)
+        self.domain = self.message.questions[0].qname
         print(threading.current_thread())
         print("\tDomain:", self.domain)
         print("\tAddress:", self.address)
@@ -66,7 +68,7 @@ class RequestHandler(Thread):
                 sock, self.domain, Resolver.root_server
             )
             sock.close()
-        self.send_response(message, records, authoritative)
+        self.send_response(records, authoritative)
 
 
 class Server:
