@@ -37,7 +37,7 @@ def run_server():
         cache.read_cache_file()
         Server.cache = cache
 
-    server = Server(args.port, args.ttl)
+    server = Server(args.port)
     try:
         server.serve()
     except KeyboardInterrupt:
