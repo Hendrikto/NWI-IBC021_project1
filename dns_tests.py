@@ -2,11 +2,13 @@
 
 """Tests for your DNS resolver and server"""
 
+import socket
 import sys
 import unittest
 from unittest import TestCase
 from argparse import ArgumentParser
 
+from dns.message import Message, Question, Header
 from dns.cache import RecordCache
 from dns.classes import Class
 from dns.name import Name
@@ -14,7 +16,7 @@ from dns.resolver import Resolver
 from dns.resource import ResourceRecord, ARecordData, CNAMERecordData
 from dns.types import Type
 
-PORT = 5001
+PORT = 53
 SERVER = "localhost"
 
 
@@ -170,13 +172,26 @@ class TestResolverCache(TestCase):
 class TestServer(TestCase):
     """Server tests"""
 
+    def test_authority_domain(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        question = Question(Name("server1.gumpe"), Type.A, Class.IN)
+        header = Header(1337, 0, 1, 0, 0, 0)
+        query = Message(header, questions=[question])
+        s.sendto(query.to_bytes(), (SERVER, PORT))
+        data = s.recv(512)
+        message = Message.from_bytes(data)
+        self.assertEqual(
+            message.answers[0].rdata.address,
+            "10.0.1.5"
+        )
+        s.close()
 
 def run_tests():
     """Run the DNS resolver and server tests"""
     parser = ArgumentParser(description="DNS Tests")
     parser.add_argument("-s", "--server", type=str, default="localhost",
                         help="the address of the server")
-    parser.add_argument("-p", "--port", type=int, default=5001,
+    parser.add_argument("-p", "--port", type=int, default=53,
                         help="the port of the server")
     args, extra = parser.parse_known_args()
     global PORT, SERVER
