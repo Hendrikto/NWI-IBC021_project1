@@ -211,8 +211,16 @@ class TestServer(TestCase):
         s.close()
         message = Message.from_bytes(data)
         self.assertEqual(
-            message.answers[0].rdata.address,
-            "128.119.245.12"
+            message.answers,
+            [
+                ResourceRecord(
+                    name=Name("gaia.cs.umass.edu"),
+                    type_=Type.A,
+                    class_=Class.IN,
+                    ttl=0,
+                    rdata=ARecordData("128.119.245.12")
+                ),
+            ]
         )
 
 def run_tests():
