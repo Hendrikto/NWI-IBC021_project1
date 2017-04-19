@@ -173,18 +173,18 @@ class TestServer(TestCase):
     """Server tests"""
 
     def test_authority_domain(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         question = Question(Name("server1.gumpe"), Type.A, Class.IN)
         header = Header(1337, 0, 1, 0, 0, 0)
         query = Message(header, questions=[question])
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(query.to_bytes(), (SERVER, PORT))
         data = s.recv(512)
+        s.close()
         message = Message.from_bytes(data)
         self.assertEqual(
             message.answers[0].rdata.address,
             "10.0.1.5"
         )
-        s.close()
 
 def run_tests():
     """Run the DNS resolver and server tests"""
