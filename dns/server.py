@@ -81,7 +81,6 @@ class Server:
         Args:
             port (int): port that server is listening on
         """
-        self.ttl = ttl
         self.port = port
         self.done = False
 
