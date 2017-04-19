@@ -35,6 +35,7 @@ class Catalog:
 
 class Zone:
     """A zone in the domain name space"""
+    default_ttl = 7200
 
     record_re = (
         "^(?:((?:\w+\.?)+))?"  # Domain
@@ -77,7 +78,7 @@ class Zone:
                 name=Name(domain),
                 type_=Type[type_],
                 class_=Class[class_],
-                ttl=int(ttl) if ttl is not None else 0,
+                ttl=int(ttl) if ttl is not None else Zone.default_ttl,
                 rdata=RecordData.create_from_str(Type[type_], rdata)
             )
             if domain in self.records:
