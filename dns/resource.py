@@ -160,6 +160,9 @@ class ARecordData(RecordData):
         """
         self.address = address
 
+    def __str__(self):
+        return "IP: " + self.address
+
     def __eq__(self, other):
         return (
                isinstance(other, ARecordData) and
@@ -207,6 +210,9 @@ class CNAMERecordData(RecordData):
             cname (Name): cname.
         """
         self.cname = cname
+
+    def __str__(self):
+        return "Canonical Name: {}".format(self.cname)
 
     def __eq__(self, other):
         return (
@@ -258,6 +264,9 @@ class NSRecordData(RecordData):
             nsdname (Name): nsdname.
         """
         self.nsdname = nsdname
+
+    def __str__(self):
+        return "NSD Name: {}".format(self.nsdname)
 
     def __eq__(self, other):
         return (
