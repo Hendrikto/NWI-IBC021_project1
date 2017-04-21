@@ -21,7 +21,7 @@ class Name:
         elif isinstance(hostname, list):
             self.labels = hostname
         elif isinstance(hostname, Name):
-            self.labels = hostname.labels
+            self.labels = list(hostname.labels)
         else:
             raise TypeError
 
