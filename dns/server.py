@@ -40,11 +40,13 @@ class RequestHandler(Thread):
                     return True, None
         return False, None
 
-    def send_response(self, records, authoritative):
+    def send_response(self, records, authoritative, error=0):
         """Send a response to some message."""
-        if len(records) == 0:
+        if not error and len(records) == 0:
+            error = 3  # NXDOMAIN (Domain Name not found)
+        if error != 0:
             header = Header(self.message.header.ident, 0, 0, 0, 0, 0)
-            header.rcode = 3  # NXDOMAIN (Name not found error code)
+            header.rcode = error
         else:
             header = Header(
                 self.message.header.ident, 0, 0, len(records), 0, 0
