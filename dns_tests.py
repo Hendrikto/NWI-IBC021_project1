@@ -253,15 +253,22 @@ class TestServer(TestCase):
             ),
         ])
         header = Header(69, 0, 1, 0, 0, 0)
-        question = Question(Name("dns1.gumpe"), Type.A, Class.IN)
+        question = Question(Name("www.gumpe"), Type.A, Class.IN)
         queries.append(Message(header, questions=[question]))
         answers.append([
             ResourceRecord(
-                name=Name("dns1.gumpe"),
+                name=Name("www.gumpe"),
                 type_=Type.A,
                 class_=Class.IN,
                 ttl=0,
-                rdata=ARecordData("10.0.1.2")
+                rdata=ARecordData("10.0.1.7")
+            ),
+            ResourceRecord(
+                name=Name("www.gumpe"),
+                type_=Type.CNAME,
+                class_=Class.IN,
+                ttl=0,
+                rdata=CNAMERecordData(Name("server2.gumpe"))
             ),
         ])
         sockets = [
