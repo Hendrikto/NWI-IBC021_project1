@@ -212,7 +212,7 @@ class CNAMERecordData(RecordData):
         Args:
             cname (Name): cname.
         """
-        self.cname = cname
+        self.cname = Name(cname)
 
     def __str__(self):
         return "Canonical Name: {}".format(self.cname)
