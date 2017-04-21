@@ -60,7 +60,12 @@ class RequestHandler(Thread):
 
     def run(self):
         """ Run the handler thread"""
-        self.message = Message.from_bytes(self.data)
+        try:
+            self.message = Message.from_bytes(self.data)
+        except:
+            self.message = Message(Header(0, 0, 0, 0, 0, 0))
+            self.send_response([], False, 1)
+            return
         self.domain = self.message.questions[0].qname
         print(threading.current_thread())
         print("\tDomain:", self.domain)
