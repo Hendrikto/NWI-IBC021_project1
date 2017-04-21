@@ -160,6 +160,12 @@ class ARecordData(RecordData):
         """
         self.address = address
 
+    def __eq__(self, other):
+        return (
+               isinstance(other, ARecordData) and
+               self.address == other.address
+        )
+
     def to_bytes(self, offset, compress):
         """Convert to bytes.
 
