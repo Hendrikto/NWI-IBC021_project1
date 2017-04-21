@@ -44,7 +44,7 @@ class RequestHandler(Thread):
         """Send a response to some message."""
         if len(records) == 0:
             header = Header(self.message.header.ident, 0, 0, 0, 0, 0)
-            header.rcode = 3
+            header.rcode = 3  # NXDOMAIN (Name not found error code)
         else:
             header = Header(
                 self.message.header.ident, 0, 0, len(records), 0, 0
@@ -65,12 +65,15 @@ class RequestHandler(Thread):
         print("\tAddress:", self.address)
         authoritative, records = self.lookup_zone()
         if records is None:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            resolver = Resolver(5, Server.cache)
-            records = resolver.query_recursive(
-                sock, self.domain, Resolver.root_server
-            )
-            sock.close()
+            if self.message.header.rd:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                resolver = Resolver(5, Server.cache)
+                records = resolver.query_recursive(
+                    sock, self.domain, Resolver.root_server
+                )
+                sock.close()
+            else:
+                self.send_response([], authoritative)
         self.send_response(records, authoritative)
 
 
