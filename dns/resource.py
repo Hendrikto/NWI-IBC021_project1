@@ -72,11 +72,14 @@ class ResourceRecord(object):
                    rdata)
 
     def __hash__(self):
-        return hash("{} {} {}".format(self.name, self.type_, self.class_))
+        return hash("{} {} {} {}".format(
+            self.name, self.rdata, self.type_, self.class_
+        ))
 
     def __eq__(self, other):
         return (
             self.name == other.name and
+            self.rdata == other.rdata and
             self.type_ is other.type_ and
             self.class_ is other.class_
         )
