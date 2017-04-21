@@ -11,6 +11,7 @@ from threading import Thread
 
 from dns.message import Message, Header
 from dns.resolver import Resolver
+from dns.types import Type
 from dns.zone import Catalog
 
 
@@ -25,16 +26,20 @@ class RequestHandler(Thread):
         self.data = data
         self.address = address
 
-    def lookup_zone(self):
+    def lookup_zone(self, domain):
         """Look for a record in the zone files."""
-        for i in range(len(self.domain.labels) + 1):
-            zone = ".".join(self.domain.labels[i:]) + "."
+        for i in range(len(domain.labels) + 1):
+            zone = ".".join(domain.labels[i:]) + "."
             if zone in Server.catalog.zones:
-                name = str(self.domain)[:str(self.domain).rfind(zone)]
+                name = str(domain)[:str(domain).rfind(zone)]
                 if name in Server.catalog.zones[zone].records:
                     records = Server.catalog.zones[zone].records[name]
                     for record in records:
-                        record.name = self.domain
+                        record.name = domain
+                        if record.type_ is Type.CNAME:
+                            records.append(
+                                self.lookup_zone(record.rdata.cname)[1]
+                            )
                     return True, records
                 else:
                     return True, None
@@ -70,7 +75,7 @@ class RequestHandler(Thread):
         print(threading.current_thread())
         print("\tDomain:", self.domain)
         print("\tAddress:", self.address)
-        authoritative, records = self.lookup_zone()
+        authoritative, records = self.lookup_zone(self.domain)
         if records is None:
             if self.message.header.rd:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
