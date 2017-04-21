@@ -61,7 +61,10 @@ class RecordCache:
             record (ResourceRecord): the record added to the cache
         """
         record.ttl = self.ttl or record.ttl
-        self.records.add(CacheRecord(record, time.time()))
+        if isinstance(record, CacheRecord):
+            self.records.add(record)
+        else:
+            self.records.add(CacheRecord(record, time.time()))
 
     def add_records(self, records):
         """ Add new Records to the cache
