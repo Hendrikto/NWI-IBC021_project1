@@ -223,6 +223,59 @@ class TestServer(TestCase):
             ]
         )
 
+    def test_concurrent_requests(self):
+        queries = []
+        answers = []
+        question = Question(Name("gaia.cs.umass.edu"), Type.A, Class.IN)
+        header = Header(1337, 0, 1, 0, 0, 0)
+        queries.append(Message(header, questions=[question]))
+        answers.append([
+            ResourceRecord(
+                name=Name("gaia.cs.umass.edu"),
+                type_=Type.A,
+                class_=Class.IN,
+                ttl=0,
+                rdata=ARecordData("128.119.245.12")
+            ),
+        ])
+        question = Question(Name("server2.gumpe"), Type.A, Class.IN)
+        header = Header(420, 0, 1, 0, 0, 0)
+        queries.append(Message(header, questions=[question]))
+        answers.append([
+            ResourceRecord(
+                name=Name("server2.gumpe"),
+                type_=Type.A,
+                class_=Class.IN,
+                ttl=0,
+                rdata=ARecordData("10.0.1.7")
+            ),
+        ])
+        header = Header(69, 0, 1, 0, 0, 0)
+        question = Question(Name("dns1.gumpe"), Type.A, Class.IN)
+        queries.append(Message(header, questions=[question]))
+        answers.append([
+            ResourceRecord(
+                name=Name("dns1.gumpe"),
+                type_=Type.A,
+                class_=Class.IN,
+                ttl=0,
+                rdata=ARecordData("10.0.1.2")
+            ),
+        ])
+        sockets = [
+            socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            for _ in range(len(queries))
+        ]
+        for i in range(len(sockets)):
+            sockets[i].sendto(queries[i].to_bytes(), (SERVER, PORT))
+        responses = []
+        for i in range(len(sockets)):
+            responses.append(Message.from_bytes(sockets[i].recv(1024)))
+        for i in range(len(sockets)):
+            sockets[i].close()
+        for i in range(len(queries)):
+            self.assertCountEqual(responses[i].answers, answers[i])
+
 
 def run_tests():
     """Run the DNS resolver and server tests"""
