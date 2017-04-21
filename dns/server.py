@@ -5,6 +5,7 @@
 This module provides a recursive DNS server. You will have to implement this
 server using the algorithm described in section 4.3.2 of RFC 1034.
 """
+import copy
 import socket
 import threading
 from threading import Thread
@@ -34,11 +35,11 @@ class RequestHandler(Thread):
             if zone in Server.catalog.zones:
                 name = str(domain)[:str(domain).rfind(zone)]
                 if name in Server.catalog.zones[zone].records:
-                    records = Server.catalog.zones[zone].records[name]
+                    records = copy.deepcopy(Server.catalog.zones[zone].records[name])
                     for record in records:
                         record.name = domain
                         if record.type_ is Type.CNAME:
-                            cname = Name(record.rdata.cname)
+                            cname = record.rdata.cname
                             cname.labels += zone.split(".")[:-1]
                             records += self.lookup_zone(cname)[1]
                     return True, records
