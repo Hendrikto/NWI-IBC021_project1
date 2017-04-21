@@ -39,17 +39,20 @@ class RecordCache:
             type_ (Type): type
             class_ (Class): class
         """
+        to_remove = set()
+        return_record = None
         for record in self.records:
+            if time.time() - record.added > record.ttl:
+                to_remove.add(record)
             if (
                     record.name == dname and
                     record.type_ is type_ and
                     record.class_ is class_
             ):
                 if time.time() - record.added <= record.ttl:
-                    return record
-                else:
-                    self.records.remove(record)
-                    return
+                    return_record = record
+        self.records.difference_update(to_remove)
+        return return_record
 
     def add_record(self, record):
         """Add a new Record to the cache
