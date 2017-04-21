@@ -10,6 +10,7 @@ import threading
 from threading import Thread
 
 from dns.message import Message, Header
+from dns.name import Name
 from dns.resolver import Resolver
 from dns.types import Type
 from dns.zone import Catalog
@@ -37,9 +38,9 @@ class RequestHandler(Thread):
                     for record in records:
                         record.name = domain
                         if record.type_ is Type.CNAME:
-                            records.append(
-                                self.lookup_zone(record.rdata.cname)[1]
-                            )
+                            cname = Name(record.rdata.cname)
+                            cname.labels += zone.split(".")[:-1]
+                            records += self.lookup_zone(cname)[1]
                     return True, records
                 else:
                     return True, None
