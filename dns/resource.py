@@ -208,6 +208,12 @@ class CNAMERecordData(RecordData):
         """
         self.cname = cname
 
+    def __eq__(self, other):
+        return (
+            isinstance(other, CNAMERecordData) and
+            self.cname == other.cname
+        )
+
     def to_bytes(self, offset, compress):
         """Convert to bytes.
 
