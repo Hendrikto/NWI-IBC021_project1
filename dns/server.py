@@ -73,7 +73,7 @@ class RequestHandler(Thread):
                 )
                 sock.close()
             else:
-                self.send_response([], authoritative)
+                records = []
         self.send_response(records, authoritative)
 
 
