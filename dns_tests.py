@@ -204,6 +204,7 @@ class TestServer(TestCase):
     def test_outside_zone(self):
         question = Question(Name("gaia.cs.umass.edu"), Type.A, Class.IN)
         header = Header(1337, 0, 1, 0, 0, 0)
+        header.rd = 1
         query = Message(header, questions=[question])
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.sendto(query.to_bytes(), (SERVER, PORT))
@@ -228,6 +229,7 @@ class TestServer(TestCase):
         answers = []
         question = Question(Name("gaia.cs.umass.edu"), Type.A, Class.IN)
         header = Header(1337, 0, 1, 0, 0, 0)
+        header.rd = 1
         queries.append(Message(header, questions=[question]))
         answers.append([
             ResourceRecord(
