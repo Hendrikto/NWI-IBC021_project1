@@ -259,6 +259,12 @@ class NSRecordData(RecordData):
         """
         self.nsdname = nsdname
 
+    def __eq__(self, other):
+        return (
+            isinstance(other, NSRecordData) and
+            self.nsdname == other.nsdname
+        )
+
     def to_bytes(self, offset, compress):
         """Convert to bytes.
 
